@@ -36,10 +36,14 @@ RUN apk add --no-cache --update  \
 # Install pm2
 RUN npm install pm2 -g
 
+# Create virtual environment for Python
+RUN python3 -m venv /app/venv
+RUN . /app/venv/bin/activate
+
 # Install Python requirements
 # Ref: https://github.com/python-pillow/Pillow/issues/1763
-RUN LIBRARY_PATH=/lib:/usr/lib /bin/sh -c "pip install --no-cache-dir setuptools_rust" # https://github.com/docker/compose/issues/8105#issuecomment-775931324
-RUN LIBRARY_PATH=/lib:/usr/lib /bin/sh -c "pip install --no-cache-dir asyncio~=3.4 confuse==2.0.1 PyYAML==6.0.* psutil==5.9.8 emoji==2.11.1 matplotlib==3.9.2"
+RUN LIBRARY_PATH=/lib:/usr/lib /bin/sh -c "/app/venv/bin/pip install --no-cache-dir setuptools_rust" # https://github.com/docker/compose/issues/8105#issuecomment-775931324
+RUN LIBRARY_PATH=/lib:/usr/lib /bin/sh -c "/app/venv/bin/pip install --no-cache-dir asyncio~=3.4 confuse==2.0.1 PyYAML==6.0.* psutil==5.9.8 emoji==2.11.1 matplotlib==3.9.2"
 
 # Set up environment variables
 ENV AM_I_IN_A_DOCKER_CONTAINER=Yes

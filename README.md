@@ -51,3 +51,7 @@ Via `pip`:
 Via `npm`:
 
 - pm2
+
+## Usage
+
+Virtual environment for Python with installed packages is available at '/app/venv'. To use it, copy Python code to `/app` and run it with `/app/venv/bin/python`.
