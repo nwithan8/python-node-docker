@@ -1,8 +1,7 @@
 # Node.js 18.19 pre-installed on Alpine Linux 3.19 (Python 3.11.x)
-FROM node:18.19.0-alpine3.19
-WORKDIR /app
+FROM node:18.19.0-alpine3.19 as devel-base
 
-# Install Python utilities
+# Install Alpine and Python utilities
 # Refs:
 # Pillow install on Alpine: https://github.com/python-pillow/docker-images/blob/main/alpine/Dockerfile
 # numpy install on Alpine: https://stackoverflow.com/a/50443531
@@ -37,32 +36,12 @@ RUN apk add --no-cache --update  \
 # Install pm2
 RUN npm install pm2 -g
 
-# Copy requirements.txt from build machine to WORKDIR (/app) folder (important we do this BEFORE copying the rest of the files to avoid re-running pip install on every code change)
-COPY requirements.txt requirements.txt
-
-# Create virtual environment for Python
-RUN python3 -m venv /app/venv
-RUN . /app/venv/bin/activate
-
 # Install Python requirements
 # Ref: https://github.com/python-pillow/Pillow/issues/1763
-RUN LIBRARY_PATH=/lib:/usr/lib /bin/sh -c "/app/venv/bin/pip install --no-cache-dir setuptools_rust" # https://github.com/docker/compose/issues/8105#issuecomment-775931324
-RUN LIBRARY_PATH=/lib:/usr/lib /bin/sh -c "/app/venv/bin/pip install --no-cache-dir -r requirements.txt"
+RUN LIBRARY_PATH=/lib:/usr/lib /bin/sh -c "pip install --no-cache-dir setuptools_rust" # https://github.com/docker/compose/issues/8105#issuecomment-775931324
+RUN LIBRARY_PATH=/lib:/usr/lib /bin/sh -c "pip install --no-cache-dir asyncio~=3.4 confuse==2.0.1 PyYAML==6.0.* psutil==5.9.8 emoji==2.11.1 matplotlib==3.9.2"
 
 # Set up environment variables
 ENV AM_I_IN_A_DOCKER_CONTAINER=Yes
 
-# Make Docker /config volume for optional config file
-VOLUME /config
-
-# Make Docker /logs volume for log file
-VOLUME /logs
-
-# Copy source code from build machine to WORKDIR (/app) folder
-COPY . .
-
-# Delete unnecessary files in WORKDIR (/app) folder (not caught by .dockerignore)
-RUN echo "**** removing unneeded files ****"
-
-# Run entrypoint.sh script
-ENTRYPOINT ["sh", "entrypoint.sh"]
+CMD ["echo", "Hello Docker"]
