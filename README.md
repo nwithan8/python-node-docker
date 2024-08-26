@@ -1,5 +1,53 @@
-# ErsatzTV FFmpeg
+# Python + Node Docker Base Image
 
-This repo contains docker images that are used by [ErsatzTV](https://github.com/jasongdove/ErsatzTV).
+This repo contains Docker images that are used by [Tauticord](https://github.com/nwithan8/tauticord).
 
-Images are modified versions of those found at [jrottenberg/ffmpeg](https://github.com/jrottenberg/ffmpeg) and [linuxserver/docker-ffmpeg](https://github.com/linuxserver/docker-ffmpeg).
+Images are based on `node:18.19.0-alpine3.19`, which is based on Alpine 3.19 and contain the following:
+
+Via base image:
+
+- Node 18.19.0
+- Python 3.11.x
+
+Via `apk`:
+
+- alpine-sdk
+- wget
+- ca-certificates
+- musl-dev
+- libc-dev gcc
+- python3-dev
+- bash
+- linux-headers
+- py3-pip
+- cargo
+- make
+- cmake
+- py3-numpy
+- freetype-dev
+- fribidi-dev
+- harfbuzz-dev
+- jpeg-dev
+- lcms2-dev
+- libimagequant-dev
+- openjpeg-dev
+- tcl-dev
+- tiff-dev
+- tk-dev
+- zlib-dev
+
+Via `pip`:
+
+- PyYAML
+- psutil
+- matplotlib
+- pydantic-core
+- aiohttp
+- contourpy
+- kiwisolver
+- numpy
+- pillow
+
+Via `npm`:
+
+- pm2
