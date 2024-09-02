@@ -1,9 +1,29 @@
 ﻿name: Build & Publish Docker image
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+  release:
+    types: [ created ]
+    secrets:
+      DOCKER_USERNAME:
+        required: true
+        description: DockerHub Username
+      DOCKER_TOKEN:
+        required: true
+        description: DockerHub Access Token
+      GITEA_REGISTRY:
+        required: true
+        description: Gitea Container Registry URL
+      GITEA_USERNAME:
+        required: true
+        description: Gitea Username
+      GITEA_TOKEN:
+        required: true
+        description: Gitea Access Token
+    workflow_dispatch:
+      inputs:
+        version:
+          type: string
+          description: Version number
+          required: true
 jobs:
   publish:
     name: Build & Publish to DockerHub, GitHub Packages and Gitea
@@ -18,12 +38,14 @@ jobs:
       - name: Establish variables
         id: vars
         run: |
+          echo "version=${{ github.event.inputs.version || github.event.release.tag_name }}" >> "$GITHUB_OUTPUT"
           echo "today=$(date +'%Y-%m-%d')" >> "$GITHUB_OUTPUT"
           echo "year=$(date +'%Y')" >> "$GITHUB_OUTPUT"
           echo "container_name=python-3.x-node-18.19.0-alpine3.19" >> "$GITHUB_OUTPUT"
 
       - name: Display variables
         run: |
+          echo "Version: ${{ steps.vars.outputs.version }}"
           echo "Today: ${{ steps.vars.outputs.today }}"
           echo "Year: ${{ steps.vars.outputs.year }}"
           echo "Container Name: ${{ steps.vars.outputs.container_name }}"
@@ -65,8 +87,12 @@ jobs:
           platforms: linux/amd64,linux/armhf,linux/arm64
           tags: |
             nwithan8/${{ steps.vars.outputs.container_name }}:latest
+            nwithan8/${{ steps.vars.outputs.container_name }}:${{ steps.vars.outputs.version }}
             ghcr.io/nwithan8/${{ steps.vars.outputs.container_name }}:latest
+            ghcr.io/nwithan8/${{ steps.vars.outputs.container_name }}:${{ steps.vars.outputs.version }}
             ${{ secrets.GITEA_REGISTRY }}/nwithan8/${{ steps.vars.outputs.container_name }}:latest
+            ${{ secrets.GITEA_REGISTRY }}/nwithan8/${{ steps.vars.outputs.container_name }}:${{ steps.vars.outputs.version }}
           labels: |
             org.opencontainers.image.title=${{ steps.vars.outputs.container_name }}
+            org.opencontainers.image.version=${{ steps.vars.outputs.version }}
             org.opencontainers.image.created=${{ steps.vars.outputs.today }}
