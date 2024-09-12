@@ -6,6 +6,7 @@ FROM node:18.19.0-alpine3.19 as devel-base
 # Pillow install on Alpine: https://github.com/python-pillow/docker-images/blob/main/alpine/Dockerfile
 # numpy install on Alpine: https://stackoverflow.com/a/50443531
 RUN echo "@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+RUN echo "@community http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
 RUN apk add --no-cache --update  \
     alpine-sdk  \
     wget  \
@@ -31,7 +32,9 @@ RUN apk add --no-cache --update  \
     tcl-dev \
     tiff-dev \
     tk-dev \
-    zlib-dev
+    zlib-dev \
+    rclone \
+    ffmpeg
 
 # Install pm2
 RUN npm install pm2 -g
