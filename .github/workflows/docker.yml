@@ -18,12 +18,12 @@ on:
       GITEA_TOKEN:
         required: true
         description: Gitea Access Token
-    workflow_dispatch:
-      inputs:
-        version:
-          type: string
-          description: Version number
-          required: true
+  workflow_dispatch:
+    inputs:
+      version:
+        type: string
+        description: Version number
+        required: true
 jobs:
   publish:
     name: Build & Publish to DockerHub, GitHub Packages and Gitea
